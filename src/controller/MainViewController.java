@@ -61,13 +61,14 @@ public class MainViewController implements Initializable {
 			
 			mainVBox.getChildren().clear(); // Exclue todos os nós filhos do VBox da tela principal
 			
-			// Adiciona nos filhos do VBox da tela principal o MenuBar da tela principal e o VBox da nova tela
-			mainVBox.getChildren().addAll(mainMenu, newVBox);
-			
-			//mainVBox.getChildren().addAll(newVBox.getChildren()); // Adiciona nos filhos do VBox da tela principal os filhos do VBox da nova tela
+			// Adiciona nos filhos do VBox da tela principal o MenuBar da tela principal
+			mainVBox.getChildren().add(mainMenu);
+			 // Adiciona nos filhos do VBox da tela principal os filhos do VBox da nova tela
+			mainVBox.getChildren().addAll(newVBox.getChildren());
 			
 		} catch (IOException e) {
 			Alerts.showAlert("IOException", "Error loading view", e.getMessage(), AlertType.ERROR);
+			e.printStackTrace();
 		}
 	}
 
