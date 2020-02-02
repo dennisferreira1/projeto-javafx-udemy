@@ -4,6 +4,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Observable;
 import java.util.ResourceBundle;
 import java.util.Set;
 
@@ -23,7 +24,7 @@ import model.entities.Department;
 import model.exception.ValidationException;
 import model.service.DepartmentService;
 
-public class DepartmentFormController implements Initializable {
+public class DepartmentFormController extends Observable  implements Initializable {
 	
 	private Department department;
 	private DepartmentService departmentService;
