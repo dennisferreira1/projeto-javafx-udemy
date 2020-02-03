@@ -3,10 +3,13 @@ package controller;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import application.Main;
 import controller.components.EditButton;
+import controller.components.RemoveButton;
+import db.DbIntegrityException;
 import gui.listeners.DataChangeListener;
 import gui.util.Alerts;
 import gui.util.Utils;
@@ -20,6 +23,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -39,6 +43,8 @@ public class DepartmentListController implements Initializable, DataChangeListen
 	private TableColumn<Department, String> tableColumnName;
 	@FXML
 	private TableColumn<Department, Department> tableColumnEdit;
+	@FXML
+	private TableColumn<Department, Department> tableColumnRemove;
 	@FXML
 	private Button buttonNew;
 
@@ -64,6 +70,10 @@ public class DepartmentListController implements Initializable, DataChangeListen
 	private void initializeNodes() {
 		tableColumnId.setCellValueFactory(new PropertyValueFactory<>("id"));
 		tableColumnName.setCellValueFactory(new PropertyValueFactory<>("name"));
+		tableColumnEdit.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
+		tableColumnEdit.setCellFactory(new EditButton<>(this));
+		tableColumnRemove.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
+		tableColumnRemove.setCellFactory(new RemoveButton<>(this));
 
 		Stage stage = (Stage) Main.getMainScene().getWindow();
 		tableViewDepartment.prefHeightProperty().bind(stage.heightProperty());
@@ -71,18 +81,14 @@ public class DepartmentListController implements Initializable, DataChangeListen
 
 	public void updateTableView() {
 		if (departmentService == null) {
-			throw new IllegalArgumentException("Servie was null");
+			throw new IllegalArgumentException("Service was null");
 		}
 
 		List<Department> list = departmentService.findAll();
 		obsDepartmentList = FXCollections.observableArrayList(list);
 		tableViewDepartment.setItems(obsDepartmentList);
-		initEditButtons();
-	}
-
-	private void initEditButtons() {
-		tableColumnEdit.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
-		tableColumnEdit.setCellFactory(new EditButton<>(this));
+		tableViewDepartment.refresh();
+		
 	}
 
 	public void createDialogForm(String absoluteName, Department objDepartment, Stage parentStage) {
@@ -107,6 +113,23 @@ public class DepartmentListController implements Initializable, DataChangeListen
 		} catch (IOException e) {
 			Alerts.showAlert("IO Exception", "Error lading view", e.getMessage(), AlertType.ERROR);
 		}
+	}
+	
+	public void removeEntity(Department department) {
+		Optional<ButtonType> result = Alerts.showAlertConfirmation("Confirmation", "Are you sure to delete?");
+		if(result.get() == ButtonType.OK) {
+			if(this.departmentService == null) {
+				throw new IllegalStateException("Service was null");
+			}
+			try {
+				this.departmentService.remove(department);
+				updateTableView();
+			} catch (DbIntegrityException e) {
+				Alerts.showAlert("Error removing object", null, e.getMessage(), AlertType.ERROR);
+			}
+			
+		}
+		
 	}
 
 	@Override
