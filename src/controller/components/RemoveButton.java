@@ -1,6 +1,7 @@
 package controller.components;
 
 import controller.DepartmentListController;
+import controller.SellerListController;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -9,6 +10,7 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.util.Callback;
 import model.entities.Department;
+import model.entities.Seller;
 
 public class RemoveButton<S,T> implements Callback<TableColumn<S,T>, TableCell<S,T>> {
 
@@ -44,10 +46,15 @@ public class RemoveButton<S,T> implements Callback<TableColumn<S,T>, TableCell<S
 		};
 	}
 	
-	private void removeEntity(Object objDepartment) {
+	private void removeEntity(Object obj) {
 		if (this.classeControladora instanceof DepartmentListController) {
 			((DepartmentListController) this.classeControladora).
-			removeEntity((Department) objDepartment);
+			removeEntity((Department) obj);
+		}
+		
+		if (this.classeControladora instanceof SellerListController) {
+			((SellerListController) this.classeControladora).
+			removeEntity((Seller) obj);
 		}
 
 	}

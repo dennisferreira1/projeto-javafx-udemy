@@ -1,6 +1,7 @@
 package controller.components;
 
 import controller.DepartmentListController;
+import controller.SellerListController;
 import gui.util.Utils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -10,6 +11,7 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.util.Callback;
 import model.entities.Department;
+import model.entities.Seller;
 
 public class EditButton<S, T> implements Callback<TableColumn<S, T>, TableCell<S, T>> {
 
@@ -45,10 +47,15 @@ public class EditButton<S, T> implements Callback<TableColumn<S, T>, TableCell<S
 		};
 	}
 	
-	private void createDialogForm(Object objDepartment, ActionEvent event) {
+	private void createDialogForm(Object obj, ActionEvent event) {
 		if (this.classeControladora instanceof DepartmentListController) {
 			((DepartmentListController) this.classeControladora).
-				createDialogForm("/gui/DepartmentForm.fxml",(Department) objDepartment, Utils.currentStage(event));
+				createDialogForm("/gui/DepartmentForm.fxml",(Department) obj, Utils.currentStage(event));
+		}
+		
+		if (this.classeControladora instanceof SellerListController) {
+			((SellerListController) this.classeControladora).
+				createDialogForm("/gui/SellerForm.fxml",(Seller) obj, Utils.currentStage(event));
 		}
 
 	}
