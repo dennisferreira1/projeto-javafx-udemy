@@ -1,7 +1,6 @@
 package controller;
 
 import java.net.URL;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
@@ -138,7 +137,7 @@ public class SellerFormController extends Observable  implements Initializable {
 		Locale.setDefault(Locale.US);
 		txtBaseSalary.setText(String.format("%.2f", this.seller.getBaseSalary()));
 		if(this.seller.getBirthDate() != null) {
-			dpBirthDate.setValue(LocalDateTime.ofInstant(this.seller.getBirthDate().toInstant(), ZoneId.systemDefault()).toLocalDate());
+			dpBirthDate.setValue(this.seller.getBirthDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
 		}
 
 	}
