@@ -1,8 +1,11 @@
 package controller;
 
 import java.net.URL;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Observable;
 import java.util.ResourceBundle;
@@ -18,6 +21,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import model.entities.Seller;
@@ -35,7 +39,19 @@ public class SellerFormController extends Observable  implements Initializable {
 	@FXML
 	private TextField txtName;
 	@FXML
-	private Label labelError;
+	private TextField txtEmail;
+	@FXML
+	private DatePicker dpBirthDate;
+	@FXML
+	private TextField txtBaseSalary;
+	@FXML
+	private Label labelErrorName;
+	@FXML
+	private Label labelErrorEmail;
+	@FXML
+	private Label labelErrorBirthDate;
+	@FXML
+	private Label labelErrorBaseSalary;
 	@FXML
 	private Button btSave;
 	@FXML
@@ -107,14 +123,24 @@ public class SellerFormController extends Observable  implements Initializable {
 	private void initializeNodes() {
 		Constraints.setTextFieldInteger(txtId);
 		Constraints.setTextFieldMaxLength(txtName, 30);
+		Constraints.setTextFieldDouble(txtBaseSalary);
+		Constraints.setTextFieldMaxLength(txtEmail, 60);
+		Utils.formatDatePicker(dpBirthDate, "dd/MM/yyyy");
 	}
 	
 	public void updateFormData() {
 		if(seller == null) {
 			throw new IllegalStateException("Seller was null");
 		}
-		txtId.setText(String.valueOf(seller.getId()));
-		txtName.setText(seller.getName());
+		txtId.setText(String.valueOf(this.seller.getId()));
+		txtName.setText(this.seller.getName());
+		txtEmail.setText(this.seller.getEmail());
+		Locale.setDefault(Locale.US);
+		txtBaseSalary.setText(String.format("%.2f", this.seller.getBaseSalary()));
+		if(this.seller.getBirthDate() != null) {
+			dpBirthDate.setValue(LocalDateTime.ofInstant(this.seller.getBirthDate().toInstant(), ZoneId.systemDefault()).toLocalDate());
+		}
+
 	}
 	
 	private void setErrorsMessages(Map<String,String> errors) {
@@ -122,7 +148,7 @@ public class SellerFormController extends Observable  implements Initializable {
 		Set<String> fields = errors.keySet();
 		
 		if(fields.contains("Name")) {
-			labelError.setText(errors.get("Name"));
+			labelErrorName.setText(errors.get("Name"));
 		}
 		
 	}
