@@ -8,11 +8,16 @@ import java.util.Locale;
 
 import javafx.event.ActionEvent;
 import javafx.scene.Node;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import javafx.util.StringConverter;
+import model.entities.Department;
 
 public class Utils {
 
@@ -93,4 +98,23 @@ public class Utils {
 		});
 	}
 
+	public static <T> void formatComboBox(ComboBox<T> comboBox) {
+		Callback<ListView<T>, ListCell<T>> factory = lv -> new ListCell<T>() {
+			@Override
+			protected void updateItem(T item, boolean empty) {
+				super.updateItem(item, empty);
+				setText(empty ? "" : ((Department) item).getName());
+			}
+		};
+		comboBox.setCellFactory(factory);
+		comboBox.setButtonCell(factory.call(null));
+	}
+
+	public static Double tryParseToDouble(String str) {
+		try {
+			return Double.parseDouble(str);
+		} catch (NumberFormatException e) {
+			return null;
+		}
+	}
 }

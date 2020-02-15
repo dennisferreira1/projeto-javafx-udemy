@@ -83,7 +83,7 @@ public class DepartmentFormController extends Observable  implements Initializab
 	private void getFormData() {
 		ValidationException exception = new ValidationException("Validation error");
 		department.setId(Utils.tryParseToInt(txtId.getText()));
-		if(txtName.getText() == null || txtName.getText() == "") {
+		if(txtName.getText() == null || txtName.getText().trim().isEmpty()) {
 			exception.addError("Name", "Field can't be empty");
 		}
 		department.setName(txtName.getText());
